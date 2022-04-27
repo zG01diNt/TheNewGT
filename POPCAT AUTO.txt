@@ -1,0 +1,23 @@
+// ==UserScript==
+// @name         POPCAT Auto pop hack
+// @namespace    http://tampermonkey.net/
+// @version      v2767
+// @description  awa
+// @author       Mr X
+// @match        https://popcat.click/
+// @icon         https://www.google.com/s2/favicons?domain=popcat.click
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Your code here...
+})();
+
+document.cookie="bot= "
+const event = new KeyboardEvent('keydown', { key: 'a', ctrlKey: true });
+const timegap = 1 / (10000 / (30 * 1000));
+setInterval(() => {
+    document.dispatchEvent(event);
+}, timegap);
