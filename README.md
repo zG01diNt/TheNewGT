@@ -1,4 +1,4 @@
-- 👋 Hi, I’m @TheNewGT
+- 👋 Hi, I’m @zG01diNt
 - 👀 I’m interested in ... minecraft and some .io games
 - 🌱 I’m currently learning ... make fun
-- 📫 How to reach me ... Discord : TheNewGT#6356 | GoLD bLocK#8715
+- 📫 How to reach me ... Discord : u guess Lol
